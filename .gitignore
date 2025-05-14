@@ -170,7 +170,7 @@ settings.json
 .DS_Store
 *.parquet
 bash_scripts
-datasets
+# datasets
 data.*
 lightning_logs
 **/lightning_logs/

@@ -1,0 +1,12 @@
+pandas
+numpy
+lightning
+pytest
+ipykernel
+pandas-stubs
+types-tqdm
+torch
+timm
+seaborn
+ruamel.yaml
+PyWavelets

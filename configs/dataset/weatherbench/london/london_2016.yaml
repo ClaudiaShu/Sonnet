@@ -1,0 +1,13 @@
+data_group: weatherbench
+name: london_2016
+name_short: london_2016
+num_variables: null
+seasonality: 4
+freq: 6h
+
+end_year: 2016
+start_year: 1980
+splits:
+    train: null
+    val: null
+    test: null

@@ -1,0 +1,5 @@
+name: samformer
+model_task: MT
+model_params:
+  d_model: 64
+  revin: 1

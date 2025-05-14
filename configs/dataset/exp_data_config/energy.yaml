@@ -1,0 +1,10 @@
+data_group: darts
+name: energy
+name_short: energy
+num_variables: 20
+seasonality: 24
+freq: h
+splits:
+  train: 21169
+  val: 5136
+  test: 8759

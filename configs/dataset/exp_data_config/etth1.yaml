@@ -1,0 +1,10 @@
+data_group: darts
+name: etth1
+name_short: etth1
+num_variables: 7
+seasonality: 96
+freq: h
+splits:
+  train: 8640
+  val: 2880
+  test: 2880

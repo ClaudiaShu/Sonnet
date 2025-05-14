@@ -1,0 +1,25 @@
+epochs: 100
+accelerator: "gpu"
+devices: 0
+batch_size: 64
+learning_rate: 0.0001
+weight_decay: 0.0
+lr_scheduler: "linear_lr"
+reverse_eval: False
+patience: 5
+patience_mode: "min"
+patience_delta: 0.0001
+monitor_metric: "val_loss"
+ckpt_name: "best"
+
+
+seq_length: 24  # 24 48 72 168
+pred_length: 24
+do_dataset_split_ratio: False
+dataset_split_numeric: [21169, 5136, 8759]
+scale: True
+
+model_params:
+  individual: 0
+
+project: "energy"

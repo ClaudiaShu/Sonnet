@@ -1,0 +1,14 @@
+name: deformtime
+model_task: MB
+model_params:
+  e_layers: 2
+  d_layers: 2
+  d_model: 64
+  dropout: 0.1
+  patch_len: 8
+  stride: 8
+  kernel: 3
+  f_dim: 64
+  n_heads: 4
+  n_reshape: 12
+  revin: 0

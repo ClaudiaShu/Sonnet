@@ -1,0 +1,13 @@
+data_group: weatherbench
+name: hongkong_2018
+name_short: hongkong_2018
+num_variables: null
+seasonality: 4
+freq: 6h
+
+end_year: 2018
+start_year: 1980
+splits:
+    train: null
+    val: null
+    test: null

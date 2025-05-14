@@ -1,0 +1,37 @@
+defaults:
+  - model: sonnet
+
+
+  # - dataset: exp_data_config/electricity_consumption_zurich_2021
+  # - exp: electricity
+
+  # - dataset: exp_data_config/energy
+  # - exp: energy
+
+  - dataset: exp_data_config/etth1
+  - exp: etth
+
+  # - dataset: exp_data_config/weather
+  # - exp: weather
+  
+  # - dataset: ili/us9/us9_2019
+  # - exp: ili_exp
+
+  # - dataset: ili/eng/eng_2019
+  # - exp: ili_exp
+
+  # - dataset: weatherbench/hongkong/hongkong_2016
+  # - exp: weatherbench
+
+  - _self_
+
+seed: 42
+experiment_name: "${model.name}_${dataset.name_short}_H${exp.pred_length}"
+
+hydra:
+  run:
+    dir: ./outputs/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+  sweep:
+    dir: ./multirun/${experiment_name}/${now:%Y-%m-%d}/${now:%H-%M-%S}
+    subdir: ${hydra:job.num}
+

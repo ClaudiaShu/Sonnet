@@ -1,0 +1,14 @@
+name: timexer
+model_task: MB
+model_params:
+  d_model: 64
+  d_ff: 128
+  use_norm: 0
+  patch_len: 8
+  dropout: 0.1
+  embed: 'timeF'
+  freq: 'h'
+  activation: 'gelu'
+  factor: 2
+  n_heads: 4
+  e_layers: 2

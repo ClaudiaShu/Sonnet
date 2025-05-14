@@ -1,0 +1,24 @@
+epochs: 100
+accelerator: "gpu"
+devices: 0
+batch_size: 64
+learning_rate: 0.0002
+weight_decay: 0.0
+lr_scheduler: "linear_lr"
+reverse_eval: True
+patience: 5
+patience_mode: "min"
+patience_delta: 0.0001
+monitor_metric: "val_loss"
+ckpt_name: "best"
+
+
+seq_length: 28
+pred_length: 4
+scale: True
+target_column: "t850"
+
+model_params:
+  individual: 0
+
+project: "weatherbench"

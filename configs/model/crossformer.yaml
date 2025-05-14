@@ -1,0 +1,11 @@
+name: crossformer
+model_task: MB
+model_params:
+  e_layers: 2
+  d_model: 64
+  dropout: 0.1
+  kernel: 3
+  n_heads: 4
+  d_ff: 128
+  factor: 1
+  output_attention: false

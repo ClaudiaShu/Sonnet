@@ -1,0 +1,25 @@
+epochs: 100
+accelerator: "gpu"
+devices: 0
+batch_size: 64
+learning_rate: 0.01
+weight_decay: 0.0
+lr_scheduler: "linear_lr"
+reverse_eval: False
+patience: 5
+patience_mode: "min"
+patience_delta: 0.0001
+monitor_metric: "val_loss"
+ckpt_name: "best"
+
+
+seq_length: 14
+pred_length: 7
+do_dataset_split_ratio: False
+dataset_split_numeric: [8640, 2880, 2880]
+scale: True
+
+model_params:
+  individual: 0
+
+project: "Sonnet"

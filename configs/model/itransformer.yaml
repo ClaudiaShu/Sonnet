@@ -1,0 +1,14 @@
+name: itransformer
+model_task: MT
+model_params:
+  output_attention: 0
+  use_norm: 1
+  factor: 2
+  dropout: 0.1
+  e_layers: 2
+  d_model: 64
+  d_ff: 128
+  n_heads: 4
+  embed: 'timeF'
+  freq: 'h'
+  activation: 'gelu'

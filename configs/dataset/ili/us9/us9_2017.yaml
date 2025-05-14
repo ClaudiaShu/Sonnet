@@ -1,0 +1,13 @@
+data_group: ili_trends
+name: us9_2017
+name_short: us9_2017
+num_variables: null
+seasonality: 365
+freq: d
+
+end_year: 2017
+total_year: 10
+splits:
+  train: null
+  val: null
+  test: null

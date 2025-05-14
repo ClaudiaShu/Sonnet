@@ -1,0 +1,15 @@
+name: sonnet
+channels:
+  - defaults
+dependencies:
+  - python=3.12
+  - pip
+  - numpy
+  - pandas 
+  - matplotlib
+  - pip:
+    - darts
+    - autogluon
+    - gluonts
+    - nbformat
+    - hydra-core

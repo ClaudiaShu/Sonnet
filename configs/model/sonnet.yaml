@@ -1,0 +1,7 @@
+name: sonnet
+model_task: MB
+model_params:
+  d_model: 64
+  n_atoms: 16
+  alpha: 0.5
+  revin: 0

@@ -1,0 +1,24 @@
+name: moderntcn
+model_task: MT
+model_params:
+  stem_ratio: 6
+  downsample_ratio: 2
+  ffn_ratio: 1
+  num_blocks: [1, 1, 1, 1]
+  large_size: [31, 29, 27, 13]
+  small_size: [5, 5, 5, 5]
+  dims: [256, 256, 256, 256]
+  dw_dims: [256, 256, 256, 256]
+  small_kernel_merged: 0
+  dropout: 0.1
+  head_dropout: 0.1
+  use_multi_scale: 0
+  revin: 1
+  affine: 0
+  subtract_last: 0
+  freq: 'h'
+  individual: 0
+  kernel_size: 25
+  patch_size: 8
+  patch_stride: 4
+  decomposition: 0

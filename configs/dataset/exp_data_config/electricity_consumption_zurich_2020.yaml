@@ -1,0 +1,10 @@
+data_group: darts
+name: electricity_consumption_zurich_2020
+name_short: electricity_2020
+num_variables: 10
+seasonality: 168
+freq: 1h
+splits:
+  train: 35064
+  val: 8760
+  test: 8784

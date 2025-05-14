@@ -1,0 +1,4 @@
+name: dlinear
+model_task: MT
+model_params:
+  individual: 0

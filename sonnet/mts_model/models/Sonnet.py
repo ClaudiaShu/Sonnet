@@ -11,7 +11,6 @@ class AdaptiveWavelet(nn.Module):
     """
     Adaptive Time-Frequency Atoms
     """
-
     def __init__(self, n_vars, n_atoms, seq_len):
         """
         n_vars: number of variables (channels)
@@ -27,26 +26,22 @@ class AdaptiveWavelet(nn.Module):
         self.freq_params = nn.Parameter(torch.randn(n_vars, n_atoms, 3))
 
     def forward(self, x):
-        # x: [B, T, N] where N == n_vars
         B, T, N = x.shape
         device = x.device
 
-        # Create time vector once on GPU: shape [T]
+        # Create time vector
         t = torch.linspace(0, 1, T, device=device)
         t2 = t**2  # shape [T]
 
-        # Compute atoms for each variable:
         # freq_params: [N, n_atoms, 3] -> split into alpha, beta, gamma each of shape [N, n_atoms, 1]
         alpha = self.freq_params[..., 0].unsqueeze(-1)  # [N, n_atoms, 1]
         beta = self.freq_params[..., 1].unsqueeze(-1)  # [N, n_atoms, 1]
         gamma = self.freq_params[..., 2].unsqueeze(-1)  # [N, n_atoms, 1]
 
-        # Using broadcasting, compute atoms: [N, n_atoms, T]
         # exp(-alpha * t²) : Gaussian envelope
         # cos(beta * t + gamma * t²): frequency modulated cosine
         atoms = torch.exp(-alpha * t2) * torch.cos(beta * t + gamma * t2)
 
-        # Compute coefficients via Einstein summation:
         # x: [B, T, N], atoms: [N, n_atoms, T] -> coeffs: [B, n_atoms, T, N]
         coeffs = torch.einsum("btn,nkt->bktn", x, atoms)
         return coeffs, atoms
@@ -56,17 +51,15 @@ class CoherenceAttention(nn.Module):
     """
     Cross-Temporal Spectral Coherence Attention
     """
-    # ! d_k is actually the same as hidden_dim, correct this
     def __init__(self, d_model, d_k, hidden_dim):
         super().__init__()
-        # self.d_model = d_model
         self.d_k = d_k
         self.hidden_dim = hidden_dim
         self.scale = d_k**-0.5
         self.proj = nn.Linear(d_model, hidden_dim * 3)  
 
         # Variable interaction parameters
-        self.var_attn = nn.Parameter(torch.eye(d_model))  # Learnable variable adjacency
+        self.var_attn = nn.Parameter(torch.eye(d_model))
         self.var_mlp = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim),
             nn.GELU(),
@@ -80,18 +73,12 @@ class CoherenceAttention(nn.Module):
         # coeffs: [B, N, T, D]
         B, N, T, D = coeffs.shape  # B: batch size, N: n_atoms, T: sequence length, D: n_vars
 
-        # Project to Q, K, V: [B*T, N, n_heads*3]
         qkv = self.proj(coeffs)
-
-        # Split into heads -> reshape to [B*T, N, n_heads, 3] and split along last dim
         qkv = qkv.reshape(B, N, T, self.hidden_dim, 3)
-        # Directly split along last dimension without needing squeeze
         q, k, v = qkv[..., 0], qkv[..., 1], qkv[..., 2]  # Each [B, N, T, n_heads]
         q, k = [rearrange(embed, "b n l d -> b n d l") for embed in (q, k)]
         v = rearrange(v, "b n l d -> b n d l")
 
-        # Quantify the coherence between two signals using the cross-spectral density
-        # Compute spectral coherence attention using FFT
         Q_fft = torch.fft.rfft(q, dim=2)  # [B*T, N, n_heads, K//2+1]
         K_fft = torch.fft.rfft(k, dim=2)
 
@@ -101,14 +88,13 @@ class CoherenceAttention(nn.Module):
 
         coherence = P_xy.abs().pow(2) / (P_xx.abs() * P_yy.abs()).clamp(min=1e-6)
 
-        # --- Time-wise Attention ---
         time_attn = F.softmax(coherence / self.scale, dim=-1)
         time_attn = self.dropout(time_attn)
 
         # Apply attention to values (v)
         out_time = time_attn.unsqueeze(2) * v
 
-        # --- Variable-Wise Attention ---
+        # --- Variable ---
         # Reshape for variable interactions
         out_time = rearrange(out_time, 'b nh hd l -> b l (nh hd)')
         var_attn = F.softmax(self.var_attn, dim=-1)  # [C, C]
@@ -137,15 +123,13 @@ class KoopmanLayer(nn.Module):
         B, K, T, N = x.shape
 
         # Construct unitary Koopman matrix
-        U, _ = torch.linalg.qr(self.U)  # QR decomposition for Stiefel projection
-        # Each diagonal element e^{i \theta_j} is a rotation (phase shift) in the complex plane
+        U, _ = torch.linalg.qr(self.U)  # QR decomposition 
         D = torch.diag(torch.exp(1j * self.theta))  # eigenvalue matrix
         K_mat = U @ D @ U.conj().T  # [n_atoms, n_atoms]
 
         x = x.permute(0, 3, 1, 2).reshape(B * N, K, T)  # [B*N, K, T]
         K_mat = K_mat.unsqueeze(0).expand(B * N, -1, -1)  # [B*N, n_atoms, n_atoms]
 
-        # Apply Koopman operator using batch multiplication, result: [B*N, n_atoms, T]
         x_evolved = torch.bmm(K_mat, x)
 
         # Restore original dimensions to [B, K, T, N]
@@ -156,12 +140,10 @@ class KoopmanLayer(nn.Module):
 class SonetBlock(nn.Module):
     def __init__(self, d_model, n_atoms, seq_len, hidden_dim, downsample_factor=1):
         """
-        d_model: input feature dimension
-        n_atoms: number of chirplets/atoms (for wavelet and koopman layers)
-        seq_len: sequence length before pooling
-        hidden_dim: hidden dimension for attention
+        d_model: hidden dimension 
+        n_atoms: number of atoms
+        seq_len: sequence length
         downsample_factor: factor to downsample the time dimension (1 means no downsampling)
-        reg_weight: regularization weight for the AdaptiveWavelet
         """
         super().__init__()
         self.downsample_factor = downsample_factor
@@ -180,8 +162,6 @@ class SonetBlock(nn.Module):
         """
         x: [B, T, d_model]
         """
-        # Downsample the time dimension if needed.
-        # Permute to [B, d_model, T] for pooling along time.
         if self.downsample_factor > 1:
             x = x.transpose(1, 2)
             x = self.pool(x)
@@ -190,12 +170,9 @@ class SonetBlock(nn.Module):
         coeffs, atoms = self.wavelet(x)  # coeffs: [B, n_atoms, T', d_model]
         z = self.attention(coeffs)  # e.g. [B, 1, T', d_model]
 
-        # Ensure the tensor is in complex format for Koopman evolution.
         z_koop = self.koopman(z.to(torch.complex64))
-        # Reconstruction: einsum 'bktn,nkt->btn'
         recon = torch.einsum("bktn,nkt->btn", z_koop.real, atoms)
 
-        # recon = torch.einsum("bktn,nkt->btn", z, atoms)
         return recon  # Output shape: [B, T_new, d_model]
 
 
@@ -215,7 +192,7 @@ class Model(BaseModel):
             self.revin = RevIN(num_features=1)
 
         # Separate embeddings for target and exogenous variables
-        n_target_vars = 1  # Assuming last variable is the target
+        n_target_vars = 1  
         n_exog_vars = configs.enc_in - n_target_vars
 
         self.alpha = configs.alpha
@@ -286,7 +263,6 @@ class Model(BaseModel):
         outputs = []
         for block in self.blocks:
             out = block(x)  # out: [B, T_block, d_model]
-            # Upsample to original T if necessary
             if out.shape[1] != x.shape[1]:
                 out = nn.functional.interpolate(
                     out.transpose(1, 2),
@@ -295,7 +271,7 @@ class Model(BaseModel):
                     align_corners=False,
                 ).transpose(1, 2)
             outputs.append(out)
-        # Fuse features. Here they are averaged, but you could concatenate or sum.
+       
         fused = torch.stack(outputs, dim=0).mean(dim=0)
         out_dec = self.decoder(fused)
         out = self.project(out_dec)

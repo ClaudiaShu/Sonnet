@@ -19,7 +19,7 @@ import hydra
 
 
 warnings.filterwarnings("ignore")
-# Configure logging
+
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
@@ -72,7 +72,6 @@ def run_experiment(cfg: DictConfig):
         min_delta=cfg.exp.patience_delta,
     )
 
-    # For datasets other than ILI, check if the sum of splits is larger than 1
     if cfg.dataset.splits.train is not None:
         if sum(cfg.dataset.splits.values()) > 1:
             cfg.exp.do_dataset_split_ratio = False
@@ -100,7 +99,7 @@ def run_experiment(cfg: DictConfig):
     )
     dataset = data_register.data_module_class(
         cfg.dataset.name,
-        **data_exp_params,  # add task=cfg.model.model_task
+        **data_exp_params, 
     )
     dataset.setup()
     train_loader = dataset.train_dataloader()
@@ -136,7 +135,6 @@ def run_experiment(cfg: DictConfig):
         "weight_decay": cfg.exp.weight_decay,
         "lr_scheduler": cfg.exp.lr_scheduler,
         "reverse_eval": cfg.exp.reverse_eval,
-        # "cosine_annealing_lr_args": cfg.exp.get("cosine_annealing_lr_args", {"T_max": 10, "eta_min": 1e-5}),
     }
     model = model_register.model_class(model_params, datamodule=dataset, **exp_params)
 
@@ -158,7 +156,7 @@ def run_experiment(cfg: DictConfig):
             accelerator=cfg.exp.accelerator,
             devices=[
                 cfg.exp.devices
-            ],  # [0, 1] for specific GPU, 1, 2 for number of GPUs
+            ], 
             logger=False,
         )
         trainer.fit(model, train_loader, val_loader)

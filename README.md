@@ -30,17 +30,17 @@ python scripts/run_experiment.py model=sonnet
 ### Available Models
 
 We support Sonnet and 10 baseline models
-	- sonnet
-    - deformtime
-	- crossformer
-	- moderntcn
-	- patchtst
-	- itransformer
-    - timexer
-	- samformer
-	- dlinear
-    - persistence
-    - seasonal_persistence
+- sonnet
+- deformtime
+- crossformer
+- moderntcn
+- patchtst
+- itransformer
+- timexer
+- samformer
+- dlinear
+- persistence
+- seasonal_persistence
     
 
 ### Customizing model configurations
@@ -89,16 +89,16 @@ Example on running weather prediction for Hong Kong in 2016:
 python scripts/run_experiment.py dataset=weatherbench/hongkong/hongkong_2016 exp=weatherbench
 ```
 We currently support experiments for the following 5 locations:
-	- hongkong
-    - london
-	- newyork
-	- singapore
-	- capetown
+- hongkong
+- london
+- newyork
+- singapore
+- capetown
 
 And 3 test seasons:
-	- 2016
-	- 2017
-	- 2018
+- 2016
+- 2017
+- 2018
 
 To switch locations or seasons, simply modify the dataset path. For example, for New York in 2017:
 ```

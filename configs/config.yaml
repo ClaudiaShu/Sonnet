@@ -1,6 +1,5 @@
 defaults:
   - model: sonnet
-# dlinear, crossformer, itransformer, patchtst, timexer, deformtime, moderntcn, sonnet
 
   # - dataset: exp_data_config/electricity_consumption_zurich_2021
   # - exp: electricity
@@ -11,16 +10,7 @@ defaults:
   - dataset: exp_data_config/etth1
   - exp: etth
 
-  # - dataset: exp_data_config/weather
-  # - exp: weather
-  
-  # - dataset: ili/us9/us9_2019
-  # - exp: ili_exp
-
-  # - dataset: ili/eng/eng_2019
-  # - exp: ili_exp
-
-  # - dataset: weatherbench/hongkong/oslo_2016
+  # - dataset: weatherbench/hongkong/hongkong_2016
   # - exp: weatherbench
 
   - _self_

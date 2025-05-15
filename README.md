@@ -1,7 +1,7 @@
 
 ## Installing dependencies 
 
-To install the requirements, it's best to make a new conda environment, you can do this by running:
+We recommend using a dedicated conda environment to manage dependencies. Create the environment from the provided environment.yaml file:
 ```
 conda env create -f environment.yaml
 ```
@@ -83,7 +83,7 @@ python scripts/run_experiment.py dataset=exp_data_config/etth1 exp=etth
 python scripts/run_experiment.py dataset=exp_data_config/etth2 exp=etth
 ```
 
-**WeatherBench**
+**WEA:**
 Example on running weather prediction for Hong Kong in 2016:
 ```
 python scripts/run_experiment.py dataset=weatherbench/hongkong/hongkong_2016 exp=weatherbench

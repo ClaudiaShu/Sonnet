@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 
 from sonnet.baselines.naive.persistence import Model as PersistenceModel
-from sonnet.baselines.naive.seasonal_persistence import Model as SeasonalPersistenceModel
+from sonnet.baselines.naive.seasonal_persistence import (
+    Model as SeasonalPersistenceModel,
+)
 
 from sonnet.baselines.models.DeformTime import Model as DTimeModel
 from sonnet.baselines.models.Crossformer import Model as CrossformerModel

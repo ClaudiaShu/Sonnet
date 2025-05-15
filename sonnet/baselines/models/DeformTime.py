@@ -69,13 +69,13 @@ class Model(BaseModel):
                     d_model=configs.d_model,
                     n_heads=configs.n_heads,
                     dropout=configs.dropout,
-                    droprate=dpr[l],
-                    n_days=n_days[l],
+                    droprate=dpr[layer],
+                    n_days=n_days[layer],
                     window_size=configs.kernel,
                     patch_len=configs.patch_len,
                     stride=configs.stride,
                 )
-                for l in range(configs.e_layers)
+                for layer in range(configs.e_layers)
             ],
             norm_layer=Layernorm(configs.d_model),
         )

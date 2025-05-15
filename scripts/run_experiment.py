@@ -31,10 +31,6 @@ def run_experiment(cfg: DictConfig):
     os.environ["HYDRA_FULL_ERROR"] = "1"
     set_seed(cfg.seed)
 
-    project_name = cfg.exp.project
-
-    plain_cfg = OmegaConf.to_container(cfg, resolve=True)
-
     ##### Callbacks #####
     # Initialize the progress bar
     progress_bar = RichProgressBar(
@@ -78,7 +74,7 @@ def run_experiment(cfg: DictConfig):
             cfg.exp.dataset_split_numeric = tuple(cfg.dataset.splits.values())
         else:
             cfg.exp.do_dataset_split_ratio = True
-        
+
     if cfg.model.name.startswith("seasonal"):
         cfg.exp.seq_length = max(cfg.dataset.seasonality, cfg.exp.seq_length)
 
@@ -99,7 +95,7 @@ def run_experiment(cfg: DictConfig):
     )
     dataset = data_register.data_module_class(
         cfg.dataset.name,
-        **data_exp_params, 
+        **data_exp_params,
     )
     dataset.setup()
     train_loader = dataset.train_dataloader()
@@ -154,9 +150,7 @@ def run_experiment(cfg: DictConfig):
             max_epochs=cfg.exp.epochs,
             callbacks=[progress_bar, checkpoint_callback, early_stop_callback],
             accelerator=cfg.exp.accelerator,
-            devices=[
-                cfg.exp.devices
-            ], 
+            devices=[cfg.exp.devices],
             logger=False,
         )
         trainer.fit(model, train_loader, val_loader)

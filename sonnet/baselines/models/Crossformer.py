@@ -1,6 +1,5 @@
 import torch
 import torch.nn as nn
-import torch.nn.functional as F
 from einops import rearrange, repeat
 from sonnet.baselines.layers.Crossformer_EncDec import (
     scale_block,
@@ -74,18 +73,18 @@ class Model(BaseModel):
             [
                 scale_block(
                     configs,
-                    1 if l == 0 else self.win_size,
+                    1 if layer == 0 else self.win_size,
                     configs.d_model,
                     configs.n_heads,
                     configs.d_ff,
                     1,
                     configs.dropout,
                     self.in_seg_num
-                    if l == 0
-                    else ceil(self.in_seg_num / self.win_size**l),
+                    if layer == 0
+                    else ceil(self.in_seg_num / self.win_size**layer),
                     configs.factor,
                 )
-                for l in range(configs.e_layers)
+                for layer in range(configs.e_layers)
             ]
         )
         # Decoder
@@ -123,7 +122,7 @@ class Model(BaseModel):
                     dropout=configs.dropout,
                     # activation=configs.activation,
                 )
-                for l in range(configs.e_layers + 1)
+                for layer in range(configs.e_layers + 1)
             ],
         )
 

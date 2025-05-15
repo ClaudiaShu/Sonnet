@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 from typing import List, Tuple
 
 import torch
@@ -40,8 +39,13 @@ dataset_title_map = {
 for city in city_list:
     dataset_target_map[city] = "temperature 500 hPa"
     # Format city name with the first letter capitalized for better presentation
-    capitalized_city = ' '.join(word.capitalize() for word in city.replace('_', ' ').split())
-    dataset_title_map[city] = f"Forecasting results on temperature 500 hPa in {capitalized_city}"
+    capitalized_city = " ".join(
+        word.capitalize() for word in city.replace("_", " ").split()
+    )
+    dataset_title_map[city] = (
+        f"Forecasting results on temperature 500 hPa in {capitalized_city}"
+    )
+
 
 class BasePersistenceModel(L.LightningModule):
     """
@@ -125,9 +129,7 @@ class BasePersistenceModel(L.LightningModule):
                         else metric_func(outputs[:, -1, :], targets[:, -1, :])
                     )
 
-        test_time = pd.to_datetime(self.datamodule.dates_iso)
         data_name = self.datamodule.dataset_name.split("_")[0]
-        data_target = dataset_target_map[data_name]
         data_title = dataset_title_map[data_name]
         if data_name in ["electricity", "eng", "us2", "us9"]:
             if data_name == "electricity":
@@ -136,7 +138,6 @@ class BasePersistenceModel(L.LightningModule):
             else:
                 test_season = self.datamodule.dataset_season
                 data_title = f"{data_title} - season {test_season}"
-
 
         # Prepare the values dictionary
         values = {
@@ -152,9 +153,6 @@ class BasePersistenceModel(L.LightningModule):
         }
 
         # Add a single row with aggregated metrics
-        table.add_data(*[values[col] for col in columns])
-        if self.logger is not None:
-            self.logger.experiment.log({"test_metrics_table": table})
         self.log_dict(values)
 
     def configure_optimizers(self):

@@ -2,10 +2,8 @@ import torch
 import torch.nn as nn
 import numpy as np
 from math import sqrt
-from sonnet.utils.masking import TriangularCausalMask, ProbMask
-from reformer_pytorch import LSHSelfAttention
+from sonnet.utils.masking import TriangularCausalMask
 from einops import rearrange, repeat
-
 
 
 class FullAttention(nn.Module):

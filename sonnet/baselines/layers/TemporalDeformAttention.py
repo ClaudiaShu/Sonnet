@@ -226,13 +226,14 @@ class DeformAtten1D(nn.Module):
             trunc_normal_(self.relative_position_bias_table, std=0.02)
 
     def forward(self, x, mask=None):
-        B, L, C = x.shape
-        dtype, device = x.dtype, x.device
+        B, L, _ = x.shape
+        _, device = x.dtype, x.device
         x = x.permute(0, 2, 1)  # B, C, L
 
         q = self.proj_q(x)  # B, C, L
 
-        group = lambda t: rearrange(t, "b (g d) n -> (b g) d n", g=self.n_groups)
+        def group(t):
+            return rearrange(t, "b (g d) n -> (b g) d n", g=self.n_groups)
 
         grouped_queries = group(q)
 

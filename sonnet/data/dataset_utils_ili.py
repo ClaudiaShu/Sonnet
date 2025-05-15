@@ -92,7 +92,7 @@ def corr_with(trends, keys):
     trends_selected = trends_[keys]
     try:
         correlation_score = trends_.corrwith(trends_selected, axis=0, numeric_only=True)
-    except:
+    except Exception:
         correlation_score = trends_.corrwith(trends_selected, axis=0)
     corr_filtered = pd.DataFrame(correlation_score).fillna(0)
     corr_filtered = corr_filtered.reset_index()

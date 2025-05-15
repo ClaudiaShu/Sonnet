@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from typing import Tuple
 from sklearn.preprocessing import StandardScaler
 
@@ -56,14 +55,21 @@ class CustomWeatherDataset(Dataset):
         assert city.lower() in path
         data = pd.read_csv(path, index_col=0)
         data.index = pd.to_datetime(data.index)
-        
+
         # Make sure target column is the last column for consistency with ILIDataloader
-        if self.target_column in data.columns and data.columns[-1] != self.target_column:
+        if (
+            self.target_column in data.columns
+            and data.columns[-1] != self.target_column
+        ):
             print(f"Experiment with target column: {self.target_column}")
-            cols = [col for col in data.columns if col != self.target_column] + [self.target_column]
+            cols = [col for col in data.columns if col != self.target_column] + [
+                self.target_column
+            ]
             data = data[cols]
         else:
-            print(f"[IMPORTANT] Experiment with last column: {data.columns[-1]}, as target.")
+            print(
+                f"[IMPORTANT] Experiment with last column: {data.columns[-1]}, as target."
+            )
             self.target_column = data.columns[-1]
 
         # Split data into train, validation, and test sets
@@ -73,9 +79,9 @@ class CustomWeatherDataset(Dataset):
         self.train_y, self.val_y, self.test_y = self._data_split(
             data.copy(), y=True, task=task
         )
-        
+
         # Store test time for plotting
-        test_time = self.test_y.index[self.pred_length - 1:]
+        test_time = self.test_y.index[self.pred_length - 1 :]
         self.dates_iso = test_time.strftime("%Y-%m-%dT%H:%M:%S").tolist()
 
         # Verify dimensions
@@ -151,7 +157,9 @@ class CustomWeatherDataset(Dataset):
         If y is True: return data for targets
         """
         h_one = pd.Timedelta(hours=6)  # One time step is 6 hours
-        h_seq = pd.Timedelta(hours=6 * self.seq_length)  # Input sequence length in hours
+        h_seq = pd.Timedelta(
+            hours=6 * self.seq_length
+        )  # Input sequence length in hours
         h_pred = pd.Timedelta(hours=6 * self.pred_length)  # Prediction length in hours
 
         train_start = pd.to_datetime(self.train_start_date)
@@ -180,7 +188,7 @@ class CustomWeatherDataset(Dataset):
             else:
                 # Target is only the target column (e.g., temperature)
                 data_y = data[self.target_column].copy().to_frame()
-                
+
             train_data = data_y.loc[train_start - h_pred + h_one : train_end].copy()
             val_data = data_y.loc[val_start - h_pred + h_one : val_end].copy()
             test_data = data_y.loc[test_start - h_pred + h_one : test_end].copy()
@@ -192,12 +200,8 @@ class CustomWeatherDataset(Dataset):
 
     def __getitem__(self, index):
         return (
-            torch.tensor(
-                self.data[index : index + self.seq_length], dtype=torch.float
-            ),
-            torch.tensor(
-                self.y[index : index + self.pred_length], dtype=torch.float
-            ),
+            torch.tensor(self.data[index : index + self.seq_length], dtype=torch.float),
+            torch.tensor(self.y[index : index + self.pred_length], dtype=torch.float),
         )
 
 
@@ -216,7 +220,7 @@ class CustomWeatherDataModule(L.LightningDataModule):
             )
 
         city, year_str = parts
-        valid_cities = {"london", "newyork", "hongkong", "capetown","singapore"}
+        valid_cities = {"london", "newyork", "hongkong", "capetown", "singapore"}
         if city not in valid_cities:
             raise ValueError(
                 f"City {city} not recognized. Valid cities: {', '.join(valid_cities)}."
@@ -243,15 +247,9 @@ class CustomWeatherDataModule(L.LightningDataModule):
         if path is None:
             raise ValueError(f"Path not found for city: {self.params['city']}")
 
-        self.data_train = CustomWeatherDataset(
-            path, **self.params, mode="train"
-        )
-        self.data_val = CustomWeatherDataset(
-            path, **self.params, mode="val"
-        )
-        self.data_test = CustomWeatherDataset(
-            path, **self.params, mode="test"
-        )
+        self.data_train = CustomWeatherDataset(path, **self.params, mode="train")
+        self.data_val = CustomWeatherDataset(path, **self.params, mode="val")
+        self.data_test = CustomWeatherDataset(path, **self.params, mode="test")
         self.scaler = self.data_train.scaler
         self.num_variables = self.data_train.num_variables
         self.dates_iso = self.data_test.dates_iso
@@ -273,38 +271,46 @@ if __name__ == "__main__":
         "scale": True,
         "task": "MT",
         "target_column": "t850",
-        "start_year": 1980
+        "start_year": 1980,
     }
 
-    weather_data_module = CustomWeatherDataModule("london_2018", batch_size=64, **params)
+    weather_data_module = CustomWeatherDataModule(
+        "london_2018", batch_size=64, **params
+    )
     weather_data_module.setup()
-    
+
     train_loader = weather_data_module.train_dataloader()
     val_loader = weather_data_module.val_dataloader()
     test_loader = weather_data_module.test_dataloader()
-    
+
     # Print sample batch shapes
     first_batch = next(iter(train_loader))
     print("Train batch shapes:")
     print(f"  Inputs: {first_batch[0].shape}")
     print(f"  Targets: {first_batch[1].shape}")
-    
+
     first_batch = next(iter(val_loader))
     print("Validation batch shapes:")
     print(f"  Inputs: {first_batch[0].shape}")
     print(f"  Targets: {first_batch[1].shape}")
-    
+
     first_batch = next(iter(test_loader))
     print("Test batch shapes:")
     print(f"  Inputs: {first_batch[0].shape}")
     print(f"  Targets: {first_batch[1].shape}")
-    
+
     # Print dataset sizes
     print(f"Train dataset size: {len(weather_data_module.data_train)}")
     print(f"Validation dataset size: {len(weather_data_module.data_val)}")
     print(f"Test dataset size: {len(weather_data_module.data_test)}")
-    
+
     # Print data ranges
-    print(f"Train data range: {weather_data_module.data_train.train_start_date} to {weather_data_module.data_train.train_end_date}")
-    print(f"Val data range: {weather_data_module.data_val.val_start_date} to {weather_data_module.data_val.val_end_date}")
-    print(f"Test data range: {weather_data_module.data_test.test_start_date} to {weather_data_module.data_test.test_end_date}")
+    print(
+        f"Train data range: {weather_data_module.data_train.train_start_date} to {weather_data_module.data_train.train_end_date}"
+    )
+    print(
+        f"Val data range: {weather_data_module.data_val.val_start_date} to {weather_data_module.data_val.val_end_date}"
+    )
+    print(
+        f"Test data range: {weather_data_module.data_test.test_start_date} to {weather_data_module.data_test.test_end_date}"
+    )

@@ -1,6 +1,3 @@
-__all__ = ["PatchTST_backbone"]
-
-# Cell
 from typing import Optional
 import torch
 from torch import nn
@@ -8,7 +5,11 @@ from torch import Tensor
 import torch.nn.functional as F
 import numpy as np
 
-from sonnet.baselines.layers.PatchTST_layers import *
+from sonnet.baselines.layers.PatchTST_layers import (
+    Transpose,
+    positional_encoding,
+    get_activation_fn,
+)
 from sonnet.baselines.layers.RevIN import RevIN
 
 

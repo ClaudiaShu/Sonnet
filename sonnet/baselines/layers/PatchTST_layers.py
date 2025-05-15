@@ -1,15 +1,3 @@
-__all__ = [
-    "Transpose",
-    "get_activation_fn",
-    "moving_avg",
-    "series_decomp",
-    "PositionalEncoding",
-    "SinCosPosEncoding",
-    "Coord2dPosEncoding",
-    "Coord1dPosEncoding",
-    "positional_encoding",
-]
-
 import torch
 from torch import nn
 import math
@@ -95,46 +83,9 @@ def PositionalEncoding(q_len, d_model, normalize=True):
 SinCosPosEncoding = PositionalEncoding
 
 
-def Coord2dPosEncoding(
-    q_len, d_model, exponential=False, normalize=True, eps=1e-3, verbose=False
-):
-    x = 0.5 if exponential else 1
-    i = 0
-    for i in range(100):
-        cpe = (
-            2
-            * (torch.linspace(0, 1, q_len).reshape(-1, 1) ** x)
-            * (torch.linspace(0, 1, d_model).reshape(1, -1) ** x)
-            - 1
-        )
-        pv(f"{i:4.0f}  {x:5.3f}  {cpe.mean():+6.3f}", verbose)
-        if abs(cpe.mean()) <= eps:
-            break
-        elif cpe.mean() > eps:
-            x += 0.001
-        else:
-            x -= 0.001
-        i += 1
-    if normalize:
-        cpe = cpe - cpe.mean()
-        cpe = cpe / (cpe.std() * 10)
-    return cpe
-
-
-def Coord1dPosEncoding(q_len, exponential=False, normalize=True):
-    cpe = (
-        2 * (torch.linspace(0, 1, q_len).reshape(-1, 1) ** (0.5 if exponential else 1))
-        - 1
-    )
-    if normalize:
-        cpe = cpe - cpe.mean()
-        cpe = cpe / (cpe.std() * 10)
-    return cpe
-
-
 def positional_encoding(pe, learn_pe, q_len, d_model):
     # Positional encoding
-    if pe == None:
+    if pe is None:
         W_pos = torch.empty(
             (q_len, d_model)
         )  # pe = None and learn_pe = False can be used to measure impact of pe
@@ -152,14 +103,6 @@ def positional_encoding(pe, learn_pe, q_len, d_model):
     elif pe == "uniform":
         W_pos = torch.zeros((q_len, 1))
         nn.init.uniform_(W_pos, a=0.0, b=0.1)
-    elif pe == "lin1d":
-        W_pos = Coord1dPosEncoding(q_len, exponential=False, normalize=True)
-    elif pe == "exp1d":
-        W_pos = Coord1dPosEncoding(q_len, exponential=True, normalize=True)
-    elif pe == "lin2d":
-        W_pos = Coord2dPosEncoding(q_len, d_model, exponential=False, normalize=True)
-    elif pe == "exp2d":
-        W_pos = Coord2dPosEncoding(q_len, d_model, exponential=True, normalize=True)
     elif pe == "sincos":
         W_pos = PositionalEncoding(q_len, d_model, normalize=True)
     else:

@@ -46,7 +46,7 @@ class Model(BaseModel):
                     dropout=configs.dropout,
                     activation=configs.activation,
                 )
-                for l in range(configs.e_layers)
+                for layer in range(configs.e_layers)
             ],
             norm_layer=torch.nn.LayerNorm(configs.d_model),
         )

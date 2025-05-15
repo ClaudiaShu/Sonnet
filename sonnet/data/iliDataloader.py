@@ -1,4 +1,3 @@
-import re
 import pandas as pd
 import datetime as dt
 from typing import Tuple
@@ -156,19 +155,19 @@ class CustomILIDataset(Dataset):
     def _corr_filter(self, data: pd.DataFrame, top_c=64):
         """
         Filter columns based on correlation with 'rate'.
-        
+
         Args:
             data: DataFrame containing the data
-            top_c: Either an integer to select top N features, or a float threshold 
+            top_c: Either an integer to select top N features, or a float threshold
                 for correlation filtering (features with correlation > top_c are selected)
-        
+
         Returns:
             DataFrame with filtered columns
         """
         # Correlate with the previous years
         data_corr = data.loc[self.corr_start_date : self.train_end_date].copy()
         corr_filtered, sorted_correlation = corr_with(data_corr, "rate")
-        
+
         if isinstance(top_c, int):
             # Select top N features by correlation (as before)
             # C + 1 to include the target column
@@ -184,10 +183,14 @@ class CustomILIDataset(Dataset):
                 keys = keys.append(pd.Index(["rate"]))
             else:
                 keys = keys.drop("rate").append(pd.Index(["rate"]))
-            print(f"{len(keys)} features selected based on correlation threshold: {top_c}.")
+            print(
+                f"{len(keys)} features selected based on correlation threshold: {top_c}."
+            )
         else:
-            raise ValueError("top_c must be either an integer or a float between 0 and 1.")
-        
+            raise ValueError(
+                "top_c must be either an integer or a float between 0 and 1."
+            )
+
         return data[keys]
 
     def _scaling(
@@ -307,9 +310,6 @@ class CustomILIDataset(Dataset):
         baseline1 = self._calculate_baseline(
             region, data_y, self.season_start_date1, self.season_end_date1
         )
-        baseline2 = self._calculate_baseline(
-            region, data_y, self.season_start_date2, self.season_end_date2
-        )
         baseline3 = self._calculate_baseline(
             region, data_y, self.season_start_date3, self.season_end_date3
         )
@@ -355,7 +355,7 @@ class CustomILIDataset(Dataset):
         return baseline(non_influenza_weeks)
 
     def __len__(self):
-         return self.len
+        return self.len
 
     def __getitem__(self, index):
         if self.slice == 0:

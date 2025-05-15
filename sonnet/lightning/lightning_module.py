@@ -1,6 +1,5 @@
 import json
 import numpy as np
-import pandas as pd
 
 import lightning as L
 import torch
@@ -48,8 +47,12 @@ dataset_title_map = {
 for city in city_list:
     dataset_target_map[city] = "temperature 500 hPa"
     # Format city name with the first letter capitalized for better presentation
-    capitalized_city = ' '.join(word.capitalize() for word in city.replace('_', ' ').split())
-    dataset_title_map[city] = f"Forecasting results on temperature 500 hPa in {capitalized_city}"
+    capitalized_city = " ".join(
+        word.capitalize() for word in city.replace("_", " ").split()
+    )
+    dataset_title_map[city] = (
+        f"Forecasting results on temperature 500 hPa in {capitalized_city}"
+    )
 
 
 def make_output_prediction(func):
@@ -208,10 +211,8 @@ class BaseModel(L.LightningModule):
                         else metric_func(outputs[:, -1, :], targets[:, -1, :])
                     )
 
-        test_time = pd.to_datetime(self.datamodule.dates_iso)
         data_name = self.datamodule.dataset_name.split("_")[0]
-        data_target = dataset_target_map[data_name]
-        data_title = dataset_title_map[data_name] 
+        data_title = dataset_title_map[data_name]
         if data_name in ["electricity", "eng", "us2", "us9"]:
             if data_name == "electricity":
                 test_season = self.datamodule.dataset_name.split("_")[-1]
@@ -234,8 +235,6 @@ class BaseModel(L.LightningModule):
         }
 
         # Add a single row with aggregated metrics
-        table.add_data(*[values[col] for col in columns])
-        self.logger.experiment.log({"test_metrics_table": table})
         self.log_dict(values)
 
     def configure_optimizers(self):

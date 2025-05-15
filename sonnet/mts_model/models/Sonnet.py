@@ -1,4 +1,3 @@
-import math
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -11,6 +10,7 @@ class AdaptiveWavelet(nn.Module):
     """
     Adaptive Time-Frequency Atoms
     """
+
     def __init__(self, n_vars, n_atoms, seq_len):
         """
         n_vars: number of variables (channels)
@@ -51,19 +51,20 @@ class CoherenceAttention(nn.Module):
     """
     Cross-Temporal Spectral Coherence Attention
     """
+
     def __init__(self, d_model, d_k, hidden_dim):
         super().__init__()
         self.d_k = d_k
         self.hidden_dim = hidden_dim
         self.scale = d_k**-0.5
-        self.proj = nn.Linear(d_model, hidden_dim * 3)  
+        self.proj = nn.Linear(d_model, hidden_dim * 3)
 
         # Variable interaction parameters
         self.var_attn = nn.Parameter(torch.eye(d_model))
         self.var_mlp = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim),
             nn.GELU(),
-            nn.Linear(hidden_dim, hidden_dim)
+            nn.Linear(hidden_dim, hidden_dim),
         )
 
         self.out_proj = nn.Linear(hidden_dim, d_model)
@@ -71,7 +72,9 @@ class CoherenceAttention(nn.Module):
 
     def forward(self, coeffs):
         # coeffs: [B, N, T, D]
-        B, N, T, D = coeffs.shape  # B: batch size, N: n_atoms, T: sequence length, D: n_vars
+        B, N, T, D = (
+            coeffs.shape
+        )  # B: batch size, N: n_atoms, T: sequence length, D: n_vars
 
         qkv = self.proj(coeffs)
         qkv = qkv.reshape(B, N, T, self.hidden_dim, 3)
@@ -96,10 +99,12 @@ class CoherenceAttention(nn.Module):
 
         # --- Variable ---
         # Reshape for variable interactions
-        out_time = rearrange(out_time, 'b nh hd l -> b l (nh hd)')
+        out_time = rearrange(out_time, "b nh hd l -> b l (nh hd)")
         var_attn = F.softmax(self.var_attn, dim=-1)  # [C, C]
-        out_var = torch.einsum('b l d, c c -> b l d', out_time, var_attn)  # Mix variables
-        out_var = rearrange(out_var, 'b l (nh hd) -> b l nh hd', nh=self.d_k)
+        out_var = torch.einsum(
+            "b l d, c c -> b l d", out_time, var_attn
+        )  # Mix variables
+        out_var = rearrange(out_var, "b l (nh hd) -> b l nh hd", nh=self.d_k)
 
         # Residual connection + MLP
         out = out_var + self.var_mlp(out_var)
@@ -123,7 +128,7 @@ class KoopmanLayer(nn.Module):
         B, K, T, N = x.shape
 
         # Construct unitary Koopman matrix
-        U, _ = torch.linalg.qr(self.U)  # QR decomposition 
+        U, _ = torch.linalg.qr(self.U)  # QR decomposition
         D = torch.diag(torch.exp(1j * self.theta))  # eigenvalue matrix
         K_mat = U @ D @ U.conj().T  # [n_atoms, n_atoms]
 
@@ -140,7 +145,7 @@ class KoopmanLayer(nn.Module):
 class SonetBlock(nn.Module):
     def __init__(self, d_model, n_atoms, seq_len, hidden_dim, downsample_factor=1):
         """
-        d_model: hidden dimension 
+        d_model: hidden dimension
         n_atoms: number of atoms
         seq_len: sequence length
         downsample_factor: factor to downsample the time dimension (1 means no downsampling)
@@ -186,14 +191,14 @@ class Model(BaseModel):
         pred_len = configs.pred_len
         d_model = configs.d_model  # latent dimension
         n_atoms = configs.n_atoms  # number of atoms
-        hidden_dim = configs.d_model  
+        hidden_dim = configs.d_model
         self.use_revin = configs.revin
         if configs.revin:
             self.revin = RevIN(num_features=1)
 
         # Separate embeddings for target and exogenous variables
-        n_target_vars = 1  
-        n_exog_vars = configs.enc_in - n_target_vars
+        n_target_vars = 1
+        n_exog_vars = n_vars - n_target_vars
 
         self.alpha = configs.alpha
         # alpha = 1, 0.75, 0.5, 0.25, 0
@@ -212,9 +217,11 @@ class Model(BaseModel):
             self.exog_embed = nn.Linear(n_exog_vars, 3 * d_model // 4)
         elif self.alpha == 1:
             # exo only
-            self.exog_embed = nn.Linear(n_exog_vars, d_model)     
+            self.exog_embed = nn.Linear(n_exog_vars, d_model)
 
-        downsample_factors = getattr(configs, "downsample_factors", [1])
+        downsample_factors = getattr(
+            configs, "downsample_factors", [1]
+        )  # for multilayer downsampling, do: [1, 2, 4]
         self.blocks = nn.ModuleList()
         for factor in downsample_factors:
             # Adjust sequence length for the block based on its downsample factor.
@@ -244,10 +251,10 @@ class Model(BaseModel):
         # Assuming the last channel is the target variable
         x_target = x[:, :, [-1]]
         x_exog = x[:, :, :-1]
-        
+
         if self.use_revin:
             x_target = self.revin(x_target, mode="norm")
-            
+
         # Embed target and exogenous separately
         if self.alpha == 0:
             x = self.target_embed(x_target)
@@ -256,7 +263,7 @@ class Model(BaseModel):
         else:
             target_embedded = self.target_embed(x_target)
             exog_embedded = self.exog_embed(x_exog)
-            
+
             # Concatenate along feature dimension
             x = torch.cat([target_embedded, exog_embedded], dim=-1)
 
@@ -271,11 +278,11 @@ class Model(BaseModel):
                     align_corners=False,
                 ).transpose(1, 2)
             outputs.append(out)
-       
+
         fused = torch.stack(outputs, dim=0).mean(dim=0)
         out_dec = self.decoder(fused)
         out = self.project(out_dec)
-        
+
         if self.use_revin:
             out = self.revin(out, mode="denorm")
         return out  # [B, pred_len, n_tar]

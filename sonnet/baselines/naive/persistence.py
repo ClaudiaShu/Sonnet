@@ -1,6 +1,4 @@
-import numpy as np
-import pandas as pd
-from typing import List, Optional, Union, Tuple
+from typing import List, Optional, Tuple
 import torch
 import lightning as L
 from sonnet.utils.metrics import acc
@@ -84,8 +82,6 @@ class PersistenceModel(L.LightningModule):
         Returns:
             Predictions tensor of shape (batch_size, pred_length, 1)
         """
-        batch_size = x.shape[0]
-
         # Extract target variable
         x_target = x[:, :, self.target_idx]
 

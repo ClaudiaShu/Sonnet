@@ -1,16 +1,24 @@
 
 ## Installing dependencies 
 
-We recommend using a dedicated conda environment to manage dependencies. Create the environment from the provided environment.yaml file:
+We recommend using **conda** to manage dependencies. To set up the environment:
+
+1.	Create the environment using the provided environment.yaml file:
 ```
 conda env create -f environment.yaml
 ```
-and then activate by running `conda activate sonnet`. Then run:
+
+2.	Activate the environment:
+```
+conda activate sonnet
+```
+
+3.	Install the package:
 ```
 pip install -e .
 ```
 
-To install the dependencies, run 
+4. To install additional development dependencies, run:
 ```
 pip install -r requirements.txt
 ```

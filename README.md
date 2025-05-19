@@ -111,7 +111,10 @@ And 3 test seasons:
 - 2017
 - 2018
 
+
 To switch locations or seasons, simply modify the dataset path. For example, for New York in 2017:
 ```
 python scripts/run_experiment.py dataset=weatherbench/newyork/newyork_2017 exp=weatherbench
 ```
+
+**Note**: The default parameter settings may not reproduce the exact results reported in the paper, as those results were obtained through hyperparameter tuning.

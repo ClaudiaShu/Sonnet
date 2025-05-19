@@ -10,11 +10,11 @@ import lightning as L
 def get_weather_paths(city: str):
     """Return the path to the weather data for a specific city"""
     path_map = {
-        "london": "datasets/weatherbench/london_weather_with_adjacent_1979_2024_6h.csv",
-        "newyork": "datasets/weatherbench/newyork_weather_with_adjacent_1979_2024_6h.csv",
-        "hongkong": "datasets/weatherbench/hongkong_weather_with_adjacent_1979_2024_6h.csv",
-        "capetown": "datasets/weatherbench/capetown_weather_with_adjacent_1979_2024_6h.csv",
-        "singapore": "datasets/weatherbench/singapore_weather_with_adjacent_1979_2024_6h.csv",
+        "london": "datasets/weatherbench/weather_london.csv",
+        "newyork": "datasets/weatherbench/weather_newyork.csv",
+        "hongkong": "datasets/weatherbench/weather_hongkong.csv",
+        "capetown": "datasets/weatherbench/weather_capetown.csv",
+        "singapore": "datasets/weatherbench/weather_singapore.csv",
     }
     return path_map.get(city.lower(), None)
 

@@ -1,17 +1,8 @@
 defaults:
   - model: sonnet
 
-  # - dataset: exp_data_config/electricity_consumption_zurich_2021
-  # - exp: electricity
-
-  # - dataset: exp_data_config/energy
-  # - exp: energy
-
-  - dataset: exp_data_config/etth1
-  - exp: etth
-
-  # - dataset: weatherbench/hongkong/hongkong_2016
-  # - exp: weatherbench
+  - dataset: weatherbench/hongkong/hongkong_2016
+  - exp: weatherbench
 
   - _self_
 

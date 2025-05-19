@@ -56,7 +56,7 @@ class CustomWeatherDataset(Dataset):
         data = pd.read_csv(path, index_col=0)
         data.index = pd.to_datetime(data.index)
 
-        # Make sure target column is the last column for consistency with ILIDataloader
+        # Make sure target column is the last column for consistency
         if (
             self.target_column in data.columns
             and data.columns[-1] != self.target_column

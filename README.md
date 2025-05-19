@@ -1,3 +1,6 @@
+# Sonnet
+
+This repository contains the official implementation of methods and experiments presented in our paper titled "<strong>Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting</strong>". It also includes the weather data set formed by us for multivariate time series forecasting.
 
 ## Installing dependencies 
 

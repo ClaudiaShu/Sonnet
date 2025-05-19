@@ -5,7 +5,7 @@ We recommend using a dedicated conda environment to manage dependencies. Create 
 ```
 conda env create -f environment.yaml
 ```
-and then activate by running `conda activate bad-benchmarks`. Then run:
+and then activate by running `conda activate sonnet`. Then run:
 ```
 pip install -e .
 ```

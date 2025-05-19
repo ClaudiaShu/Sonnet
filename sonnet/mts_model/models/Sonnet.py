@@ -21,19 +21,16 @@ class AdaptiveWavelet(nn.Module):
         self.n_vars = n_vars
         self.seq_len = seq_len
 
-        # Each variable gets its own set of frequency parameters.
-        # Shape: [n_vars, n_atoms, 3] corresponding to [α, β, γ] for each variable.
         self.freq_params = nn.Parameter(torch.randn(n_vars, n_atoms, 3))
 
     def forward(self, x):
         B, T, N = x.shape
         device = x.device
 
-        # Create time vector
+        # Time vector
         t = torch.linspace(0, 1, T, device=device)
         t2 = t**2  # shape [T]
 
-        # freq_params: [N, n_atoms, 3] -> split into alpha, beta, gamma each of shape [N, n_atoms, 1]
         alpha = self.freq_params[..., 0].unsqueeze(-1)  # [N, n_atoms, 1]
         beta = self.freq_params[..., 1].unsqueeze(-1)  # [N, n_atoms, 1]
         gamma = self.freq_params[..., 2].unsqueeze(-1)  # [N, n_atoms, 1]
@@ -42,8 +39,7 @@ class AdaptiveWavelet(nn.Module):
         # cos(beta * t + gamma * t²): frequency modulated cosine
         atoms = torch.exp(-alpha * t2) * torch.cos(beta * t + gamma * t2)
 
-        # x: [B, T, N], atoms: [N, n_atoms, T] -> coeffs: [B, n_atoms, T, N]
-        coeffs = torch.einsum("btn,nkt->bktn", x, atoms)
+        coeffs = torch.einsum("btn,nkt->bktn", x, atoms) # [B, n_atoms, T, N]
         return coeffs, atoms
 
 
@@ -59,7 +55,6 @@ class CoherenceAttention(nn.Module):
         self.scale = d_k**-0.5
         self.proj = nn.Linear(d_model, hidden_dim * 3)
 
-        # Variable interaction parameters
         self.var_attn = nn.Parameter(torch.eye(d_model))
         self.var_mlp = nn.Sequential(
             nn.Linear(hidden_dim, hidden_dim),
@@ -97,8 +92,6 @@ class CoherenceAttention(nn.Module):
         # Apply attention to values (v)
         out_time = time_attn.unsqueeze(2) * v
 
-        # --- Variable ---
-        # Reshape for variable interactions
         out_time = rearrange(out_time, "b nh hd l -> b l (nh hd)")
         var_attn = F.softmax(self.var_attn, dim=-1)  # [C, C]
         out_var = torch.einsum(
@@ -158,7 +151,6 @@ class SonetBlock(nn.Module):
         else:
             self.pool = nn.Identity()
 
-        # The wavelet layer is created with the current feature dimension and sequence length.
         self.wavelet = AdaptiveWavelet(d_model, n_atoms, seq_len)
         self.attention = CoherenceAttention(d_model, d_k=n_atoms, hidden_dim=hidden_dim)
         self.koopman = KoopmanLayer(n_atoms)
@@ -224,7 +216,6 @@ class Model(BaseModel):
         )  # for multilayer downsampling, do: [1, 2, 4]
         self.blocks = nn.ModuleList()
         for factor in downsample_factors:
-            # Adjust sequence length for the block based on its downsample factor.
             block_seq_len = seq_len // factor
             self.blocks.append(
                 SonetBlock(
@@ -247,8 +238,7 @@ class Model(BaseModel):
         self.project = nn.Linear(pred_len, n_tar)
 
     def forward(self, x):
-        # Split input into target and exogenous variables
-        # Assuming the last channel is the target variable
+        # Split input into target and exogenous variables, the last channel is the target variable
         x_target = x[:, :, [-1]]
         x_exog = x[:, :, :-1]
 
@@ -263,8 +253,6 @@ class Model(BaseModel):
         else:
             target_embedded = self.target_embed(x_target)
             exog_embedded = self.exog_embed(x_exog)
-
-            # Concatenate along feature dimension
             x = torch.cat([target_embedded, exog_embedded], dim=-1)
 
         outputs = []

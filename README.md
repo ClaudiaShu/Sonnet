@@ -10,7 +10,7 @@ and then activate by running `conda activate sonnet`. Then run:
 pip install -e .
 ```
 
-To install the dev dependencies run 
+To install the dependencies, run 
 ```
 pip install -r requirements.txt
 ```

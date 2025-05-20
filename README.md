@@ -50,7 +50,7 @@ The **weather (WEA)** dataset used in our experiments is located in the followin
 
 ### Darts data sets
 
-The **electricity consumption (ELEC)** and **energy price (ENER)** data sets are obtained from [Darts](https://github.com/unit8co/darts). You do not need to download these data set to run the experiments -- they are accessible via the Darts API, which is already integrated into our codebase.
+The **electricity consumption (ELEC)** and **energy price (ENER)** data sets are obtained from [Darts](https://github.com/unit8co/darts). You do not need to download these data sets to run the experiments -- they are accessible via the Darts API, which is already integrated into our codebase.
 
 If you want to use it for your own experiment, you can load them using:
 
@@ -102,15 +102,13 @@ We support Sonnet and 10 baseline models
 - seasonal_persistence
     
 
-### Customizing model configurations
+### Customising model configurations
 
 You can override specific configuration parameters directly from the command line. For example:
 
 ```
-python scripts/run_experiment.py model=sonnet model.model_params.n_atoms=64 model.model_params.n_atoms=16 model.model_params.alpha=0.5
+python scripts/run_experiment.py model=sonnet model.model_params.d_model=64 model.model_params.n_atoms=16 model.model_params.alpha=0.5
 ```
-
-All configuration files can be found under `configs/model`
 
 
 ### Choosing data sets
@@ -159,24 +157,26 @@ And 3 test seasons:
 - 2017
 - 2018
 
-To switch locations or seasons, simply modify the dataset path. For example, for New York in 2017:
+To change the locations or test seasons, simply modify the dataset. For example, for New York in 2017, run:
 ```
 python scripts/run_experiment.py dataset=weatherbench/newyork/newyork_2017 exp=weatherbench
 ```
 
 
-## Replicating the results
+## Reproducing the results
 
 We note that the default parameter settings may not reproduce the exact results reported in the paper, as those results were obtained through hyperparameter tuning.
 
 To support reproducibility, we provide scripts to replicate the results presented in the paper. However, due to potential variations across hardware or environments, we recommend performing hyperparameter tuning on your specific device for optimal performance.
 
 
-You can run the experiments with the tuned parameters using:
+To generate the run scripts for the WEA tasks, run the following command:
 
 ```
-bash scripts/run_tuned.sh
+bash scripts/generate_runs.sh
 ```
+
+This will create runfiles for each forecasting season and location under the `scripts/runs` folder.
 
 
 ## Acknowledgements

@@ -15,6 +15,12 @@ create_run_script() {
     
     # Calculate n_atoms as 512/d_model
     local n_atoms=$((512 / d_model))
+    # if horizon is 4 or 12, it is 28, otherwise it is double the horizon
+    if [ $horizon -eq 4 ] || [ $horizon -eq 12 ]; then
+        local lookback=28
+    else
+        local lookback=$((horizon * 2))
+    fi
     
     # Create a unique filename for this experiment
     local filename="scripts/runs/run_${dataset_short}_h${horizon}.sh"
@@ -30,7 +36,7 @@ python scripts/run_experiment.py \\
     exp.epochs=100 \\
     exp.learning_rate=${learning_rate} \\
     exp.pred_length=${horizon} \\
-    exp.seq_length=28 \\
+    exp.seq_length=${lookback} \\
     model.model_params.d_model=${d_model} \\
     model.model_params.n_atoms=${n_atoms}
 EOF

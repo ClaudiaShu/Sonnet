@@ -54,7 +54,7 @@ create_run_script "wea_ny_2018" "weatherbench/newyork/newyork_2018" 12 0.0005 32
 create_run_script "wea_ny_2018" "weatherbench/newyork/newyork_2018" 28 0.001 16
 create_run_script "wea_ny_2018" "weatherbench/newyork/newyork_2018" 120 0.0005 16
 
-create_run_script "wea_ct_2018" "weatherbench/capetown/capetown_2018" 4 0.0005 8
+create_run_script "wea_ct_2018" "weatherbench/capetown/capetown_2018" 4 0.0005 16
 create_run_script "wea_ct_2018" "weatherbench/capetown/capetown_2018" 12 0.005 16
 create_run_script "wea_ct_2018" "weatherbench/capetown/capetown_2018" 28 0.002 16
 create_run_script "wea_ct_2018" "weatherbench/capetown/capetown_2018" 120 0.001 8

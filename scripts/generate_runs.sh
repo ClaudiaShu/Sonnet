@@ -31,8 +31,7 @@ python scripts/run_experiment.py \\
     exp.learning_rate=${learning_rate} \\
     exp.pred_length=${horizon} \\
     exp.seq_length=28 \\
-    model.model_params.n_atoms=${n_atoms} \\
-    model.model_params.d_model=${d_model}
+    model.model_params.n_atoms=${n_atoms} 
 EOF
     
     # Make the script executable

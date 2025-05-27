@@ -1,5 +1,8 @@
 # Sonnet
 
+[![Hugging Face Dataset](https://img.shields.io/badge/🤗%20Datasets-wea__mts-blue)](https://huggingface.co/datasets/ClaudiaShu/wea_mts)
+[![arXiv](https://img.shields.io/badge/arXiv-2505.15312-b31b1b.svg)](https://arxiv.org/abs/2505.15312)
+
 This repository contains the official implementation of methods and experiments presented in our paper titled "<a href="https://arxiv.org/abs/2505.15312"><strong>Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting</strong></a>". It also includes the weather data set formed by us for multivariate time series forecasting.
 
 ```

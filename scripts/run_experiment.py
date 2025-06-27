@@ -121,6 +121,7 @@ def run_experiment(cfg: DictConfig):
             "enc_in": num_variables,
             "dec_in": num_variables,
             "seasonality": cfg.dataset.seasonality,
+            "data_group": cfg.dataset.data_group,
             "c_out": 1,
         }
     )

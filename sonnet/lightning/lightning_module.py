@@ -11,7 +11,6 @@ from gluonts.evaluation.metrics import (
     mase,
     mape,
     mse,
-    smape,
 )
 from torch.optim.lr_scheduler import (
     ConstantLR,
@@ -180,11 +179,22 @@ class BaseModel(L.LightningModule):
         self.test_results.append((targets, outputs))
 
     def on_test_epoch_end(self):
+        def custom_smape(predictions, targets):
+            if self.configs.data_group == "weatherbench" or "wea" in self.datamodule.dataset_name:
+                a = np.min(targets) + 30
+            else:
+                a = 0
+            
+            return np.mean(
+                2 * np.abs(predictions - targets) 
+                / (np.abs(predictions - a) + np.abs(targets - a))
+            ) * 100
+        
         metrics = {
             "mae": mase,
             "mse": mse,
             "mape": mape,
-            "smape": smape,
+            "smape": custom_smape,
         }
         eval_method = ["seq", "tar"]
 

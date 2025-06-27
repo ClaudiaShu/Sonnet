@@ -8,7 +8,6 @@ from gluonts.evaluation.metrics import (
     mase,
     mape,
     mse,
-    smape,
 )
 
 city_list = ["london", "newyork", "hongkong", "capetown", "singapore"]
@@ -98,12 +97,22 @@ class BasePersistenceModel(L.LightningModule):
         self.targets.append(y)
 
     def on_test_epoch_end(self):
-        """Calculate and log metrics at the end of test epoch"""
+        def custom_smape(predictions, targets):
+            if self.configs.data_group == "weatherbench" or "wea" in self.datamodule.dataset_name:
+                a = np.min(targets) + 30
+            else:
+                a = 0
+            
+            return np.mean(
+                2 * np.abs(predictions - targets) 
+                / (np.abs(predictions - a) + np.abs(targets - a))
+            ) * 100
+        
         metrics = {
             "mae": mase,
             "mse": mse,
             "mape": mape,
-            "smape": smape,
+            "smape": custom_smape,
         }
         eval_method = ["seq", "tar"]
 

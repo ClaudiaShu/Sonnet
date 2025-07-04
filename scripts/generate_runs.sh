@@ -21,9 +21,6 @@ create_run_script() {
     local learning_rate=$4
     local n_atoms=$5
     
-    # Calculate d_model as 512/n_atoms
-    local d_model=$((512 / n_atoms))
-    
     # Determine sequence length based on forecasting horizon
     local seq_length
     if [ $horizon -eq 4 ] || [ $horizon -eq 12 ]; then

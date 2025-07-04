@@ -4,6 +4,14 @@
 
 # Create a directory for experiment runs
 mkdir -p scripts/runs
+mkdir -p logs
+
+# Define the master script
+master_script="scripts/run_all_experiments.sh"
+echo "#!/bin/bash" > $master_script
+echo "" >> $master_script
+echo "# Master script to run all experiments" >> $master_script
+echo "" >> $master_script
 
 # Function to create a run script for each experiment
 create_run_script() {
@@ -13,8 +21,17 @@ create_run_script() {
     local learning_rate=$4
     local n_atoms=$5
     
-    # Calculate n_atoms as 512/n_atoms
-    local d_model=$((512 / n_atoms))
+    # Determine sequence length based on forecasting horizon
+    local seq_length
+    if [ $horizon -eq 4 ] || [ $horizon -eq 12 ]; then
+        seq_length=28
+    elif [ $horizon -eq 28 ]; then
+        seq_length=56
+    elif [ $horizon -eq 120 ]; then
+        seq_length=240
+    else
+        seq_length=28  # Default
+    fi
     
     # Create a unique filename for this experiment
     local filename="scripts/runs/run_${dataset_short}_h${horizon}.sh"
@@ -30,7 +47,7 @@ python scripts/run_experiment.py \\
     exp.epochs=100 \\
     exp.learning_rate=${learning_rate} \\
     exp.pred_length=${horizon} \\
-    exp.seq_length=28 \\
+    exp.seq_length=${seq_length} \\
     model.model_params.n_atoms=${n_atoms} 
 EOF
     
@@ -40,6 +57,7 @@ EOF
     # Add this run to the master script
     echo "echo \"Running experiment: ${dataset_short} (horizon=${horizon}, n_atoms=${n_atoms})\"" >> $master_script
     echo "$filename > logs/${dataset_short}_h${horizon}_d${n_atoms}.log 2>&1" >> $master_script
+    echo "" >> $master_script
 }
 
 # Generate scripts for each experiment in the table

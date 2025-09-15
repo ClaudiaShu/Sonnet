@@ -157,7 +157,7 @@ Example on running weather prediction for Hong Kong in 2016:
 ```
 python scripts/run_experiment.py dataset=weatherbench/hongkong/hongkong_2016 exp=weatherbench
 ```
-We currently support experiments for the following 5 locations:
+For the weather dataset, we currently support experiments for the following 5 locations:
 - hongkong
 - london
 - newyork

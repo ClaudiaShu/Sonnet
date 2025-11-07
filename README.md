@@ -14,6 +14,11 @@ This repository contains the official implementation of methods and experiments 
 }
 ```
 
+## News 🎉 
+
+- **(11/2025)** Released a quickstart notebook demonstrating training and inference.
+- **(05/2025)** Paper released on arXiv.
+
 ## Abstract
 
 Multivariable time series forecasting methods can integrate information from exogenous variables, leading to significant prediction accuracy gains. Transformer architecture has been widely applied in various time series forecasting models due to its ability to capture long-range sequential dependencies. However, a naïve application of transformers often struggles to effectively model complex relationships among variables over time. To mitigate against this, we propose a novel architecture, namely the **S**pectral **O**perator **N**eural **Net**work (Sonnet). Sonnet applies learnable wavelet transformations to the input and incorporates spectral analysis using the Koopman operator. Its predictive skill relies on the **M**ulti**v**ariable **C**oherence **A**ttention (MVCA), an operation that leverages spectral coherence to model variable dependencies. Our empirical analysis shows that Sonnet yields the best performance on 34 out of 47 forecasting tasks with an average mean absolute error (MAE) reduction of 1.1\% against the most competitive baseline (different per task). We further show that MVCA---when put in place of the naïve attention used in various deep learning models---can remedy its deficiencies, reducing MAE by 10.7\% on average in the most challenging forecasting tasks.

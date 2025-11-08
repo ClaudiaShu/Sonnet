@@ -1,7 +1,18 @@
-# Sonnet
+<!-- [# Sonnet] -->
 
-[![Hugging Face Dataset](https://img.shields.io/badge/🤗%20Datasets-wea__mts-blue)](https://huggingface.co/datasets/ClaudiaShu/wea_mts)
-[![arXiv](https://img.shields.io/badge/arXiv-2505.15312-b31b1b.svg)](https://arxiv.org/abs/2505.15312)
+<p align="center">
+    <img src="figure/sonnet_logo.png" alt="Sonnet logo" width="620" />
+</p>
+
+<p align="center">
+    <a href="https://huggingface.co/datasets/ClaudiaShu/wea_mts">
+        <img src="https://img.shields.io/badge/🤗%20Datasets-wea__mts-blue" alt="Hugging Face Dataset" />
+    </a>
+    &nbsp;
+    <a href="https://arxiv.org/abs/2505.15312">
+        <img src="https://img.shields.io/badge/arXiv-2505.15312-b31b1b.svg" alt="arXiv" />
+    </a>
+</p>
 
 This repository contains the official implementation of methods and experiments presented in our paper titled "<a href="https://arxiv.org/abs/2505.15312"><strong>Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting</strong></a>". It also includes the weather data set formed by us for multivariate time series forecasting.
 
@@ -16,7 +27,7 @@ This repository contains the official implementation of methods and experiments 
 
 ## News 🎉 
 
-- **(11/2025)** Our paper has been accepted for an oral presentation at AAAI! 🎉
+- **(11/2025)** Our paper has been accepted for an **oral presentation** at **AAAI**! 🎉
 - **(11/2025)** Released a quickstart notebook demonstrating training and inference.
 - **(05/2025)** Paper released on arXiv.
 

@@ -26,7 +26,7 @@ This repository contains the official implementation of methods and experiments 
 ```
 
 ## News 🎉 
-
+- **(11/2025)** Released a notebook comparing Sonnet with Chronos2, a foundation model for multivariable forecasting.
 - **(11/2025)** Our paper has been accepted for an **oral presentation** at **AAAI**! 🎉
 - **(11/2025)** Released a quickstart notebook demonstrating training and inference.
 - **(05/2025)** Paper released on arXiv.

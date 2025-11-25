@@ -133,7 +133,7 @@ We support Sonnet and 10 baseline models
 
 ### Customising model configurations
 
-You can override specific configuration parameters directly from the command line. For example:
+You can overwrite specific configuration parameters directly from the command line. For example:
 
 ```
 python scripts/run_experiment.py model=sonnet model.model_params.d_model=64 model.model_params.n_atoms=16 model.model_params.alpha=0.5

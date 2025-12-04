@@ -135,7 +135,7 @@ class KoopmanLayer(nn.Module):
         return x_evolved
 
 
-class SonetBlock(nn.Module):
+class SonnetBlock(nn.Module):
     def __init__(self, d_model, n_atoms, seq_len, hidden_dim, downsample_factor=1):
         """
         d_model: hidden dimension
@@ -218,7 +218,7 @@ class Model(BaseModel):
         for factor in downsample_factors:
             block_seq_len = seq_len // factor
             self.blocks.append(
-                SonetBlock(
+                SonnetBlock(
                     d_model=d_model,
                     n_atoms=n_atoms,
                     seq_len=block_seq_len,

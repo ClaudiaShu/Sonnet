@@ -1,3 +1,4 @@
+import os
 import pandas as pd
 from typing import Tuple
 from sklearn.preprocessing import StandardScaler
@@ -8,15 +9,16 @@ import lightning as L
 
 
 def get_weather_paths(city: str):
-    """Return the path to the weather data for a specific city"""
-    path_map = {
-        "london": "datasets/weatherbench/weather_london.csv",
-        "newyork": "datasets/weatherbench/weather_newyork.csv",
-        "hongkong": "datasets/weatherbench/weather_hongkong.csv",
-        "capetown": "datasets/weatherbench/weather_capetown.csv",
-        "singapore": "datasets/weatherbench/weather_singapore.csv",
-    }
-    return path_map.get(city.lower(), None)
+    candidates = [
+        f"../datasets/weatherbench/weather_{city.lower()}.csv",
+        f"datasets/weatherbench/weather_{city.lower()}.csv",
+    ]
+    
+    for candidate in candidates:
+        if os.path.exists(candidate):
+            return candidate
+    
+    raise FileNotFoundError(f"Weather data file for city '{city}' not found.")
 
 
 class CustomWeatherDataset(Dataset):
@@ -245,7 +247,7 @@ class CustomWeatherDataModule(L.LightningDataModule):
         """
         path = get_weather_paths(self.params["city"])
         if path is None:
-            raise ValueError(f"Path not found for city: {self.params['city']}")
+            raise FileNotFoundError(f"Weather data file for city '{self.params['city']}' not found.")
 
         self.data_train = CustomWeatherDataset(path, **self.params, mode="train")
         self.data_val = CustomWeatherDataset(path, **self.params, mode="val")

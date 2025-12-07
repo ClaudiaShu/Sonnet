@@ -141,7 +141,7 @@ def run_experiment(cfg: DictConfig):
             enable_checkpointing=False,
             enable_progress_bar=False,
             enable_model_summary=False,
-            devices=[0],
+            devices=[cfg.exp.devices],
             logger=False,
         )
         trainer.test(model, test_loader)

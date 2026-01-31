@@ -26,6 +26,7 @@ This repository contains the official implementation of methods and experiments 
 ```
 
 ## News 🎉 
+- **(01/2026)** AAAI Oral presentation in Singapore!! The recording is available here: [Zoom link](https://us06web.zoom.us/rec/play/fQJ1ATzPZWbcECvVQj5xyFi3T8681TzqugOupbPWZDeNVL0v4-0NzT2KTKVb88kmNAlzlGOpHlFt3HWM.3O-x8OfnxamelxNh?eagerLoadZvaPages=&accessLevel=meeting&canPlayFromShare=true&from=share_recording_detail&startTime=1769216854000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus06web.zoom.us%2Frec%2Fshare%2FrwfGzRo-3Ezfb5sO0X19SRslDiz7r0z1oWd7sGPYtxPbYLwrWoerOsm5PJfaYHfk.PVGtCAhPmwXOkhPA%3FstartTime%3D1769216854000).
 - **(11/2025)** Released a notebook comparing Sonnet with Chronos2, a foundation model for multivariable forecasting.
 - **(11/2025)** Our paper has been accepted for an **oral presentation** at **AAAI**! 🎉
 - **(11/2025)** Released a quickstart notebook demonstrating training and inference.

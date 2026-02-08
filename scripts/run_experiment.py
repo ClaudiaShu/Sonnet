@@ -135,6 +135,10 @@ def run_experiment(cfg: DictConfig):
     }
     model = model_register.model_class(model_params, datamodule=dataset, **exp_params)
 
+    from lightning.pytorch.profilers import PyTorchProfiler
+
+    profiler = PyTorchProfiler()
+
     # Train model
     if cfg.model.name.endswith("persistence"):
         trainer = L.Trainer(
@@ -148,6 +152,7 @@ def run_experiment(cfg: DictConfig):
     else:
         logger.info(f"Training model: {cfg.model.name}")
         trainer = L.Trainer(
+            profiler=profiler,
             max_epochs=cfg.exp.epochs,
             callbacks=[progress_bar, checkpoint_callback, early_stop_callback],
             accelerator=cfg.exp.accelerator,

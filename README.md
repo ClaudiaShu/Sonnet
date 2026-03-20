@@ -17,15 +17,21 @@
 This repository contains the official implementation of methods and experiments presented in our paper titled "<a href="https://arxiv.org/abs/2505.15312"><strong>Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting</strong></a>". It also includes the weather data set formed by us for multivariate time series forecasting.
 
 ```
-@article{shu2025sonnet,
-    author    = {Yuxuan Shu and Vasileios Lampos},
-    title     = {{Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting}},
-    journal   = {arXiv preprint arXiv:2505.15312},
-    year      = {2025}
+@article{shu2026sonnet,
+    title        = {{Sonnet: Spectral Operator Neural Network for Multivariable Time Series Forecasting}},
+    author       = {Shu, Yuxuan and Lampos, Vasileios},
+    year         = 2026,
+    journal      = {Proceedings of the AAAI Conference on Artificial Intelligence},
+    volume       = 40,
+    number       = 30,
+    pages        = {25419--25427},
+    doi          = {10.1609/aaai.v40i30.39736},
+    url          = {https://ojs.aaai.org/index.php/AAAI/article/view/39736},
 }
 ```
 
 ## News 🎉 
+- **(03/2026)** Our paper is now officially published online on **AAAI**! 📄 Read it here: [AAAI](https://ojs.aaai.org/index.php/AAAI/article/view/39736).
 - **(01/2026)** AAAI Oral presentation in Singapore!! The official recording is available here: [Zoom link](https://us06web.zoom.us/rec/play/fQJ1ATzPZWbcECvVQj5xyFi3T8681TzqugOupbPWZDeNVL0v4-0NzT2KTKVb88kmNAlzlGOpHlFt3HWM.3O-x8OfnxamelxNh?eagerLoadZvaPages=&accessLevel=meeting&canPlayFromShare=true&from=share_recording_detail&startTime=1769216854000&componentName=rec-play&originRequestUrl=https%3A%2F%2Fus06web.zoom.us%2Frec%2Fshare%2FrwfGzRo-3Ezfb5sO0X19SRslDiz7r0z1oWd7sGPYtxPbYLwrWoerOsm5PJfaYHfk.PVGtCAhPmwXOkhPA%3FstartTime%3D1769216854000).
 - **(11/2025)** Released a notebook comparing Sonnet with Chronos2, a foundation model for multivariable forecasting.
 - **(11/2025)** Our paper has been accepted for an **oral presentation** at **AAAI**! 🎉
